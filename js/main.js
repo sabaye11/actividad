@@ -1,21 +1,37 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevenir el envío tradicional
+class loginForm extends HTMLElement{
+    constructor() {
+        super();
+        let form = this.querySelector('#loginForm');
+        this.formId = form.getAttribute('id');
+        this.table = document.querySelector(`table[data-form="${this.formId}"]`).getElementsByTagName('tbody')[0];
 
-    // Obtener datos del formulario
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.user = form.querySelector('#username').value;
+            this.pass = form.querySelector('#password').value;
+            const row = this.addRow();
+            this.addCells(row);
+            this.clearForm();
+        })
+    }
 
-    // Agregar datos a la tabla
-    const table = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
-    const newRow = table.insertRow(); // Insertar una nueva fila
+    addRow() {
+        return this.table.insertRow();
+    }
 
-    // Insertar celdas y añadir el texto
-    const cell1 = newRow.insertCell(0);
-    const cell2 = newRow.insertCell(1);
-    cell1.textContent = username;
-    cell2.textContent = password;
+    addCells(row){
+        const cell1 = row.insertCell(0);
+        const cell2 = row.insertCell(1);
+        cell1.textContent = this.user;
+        cell2.textContent = this.pass;
+    }
 
-    // Limpiar el formulario después de añadir
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
-});
+    clearForm(){
+        this.user = '';
+        this.password = '';
+    }
+}
+
+customElements.define('login-form', loginForm);
+
+
